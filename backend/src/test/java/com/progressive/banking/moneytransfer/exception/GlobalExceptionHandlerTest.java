@@ -50,8 +50,7 @@ class GlobalExceptionHandlerTest {
 
     void accountNotFound_returns404AndErrorResponse() throws Exception {
  
-        when(accountService.getAccount(999))
-
+        when(accountService.getAccount(999, "user"))
                 .thenThrow(new AccountNotFoundException("Account not found: 999"));
  
         mockMvc.perform(get("/api/v1/accounts/999")
@@ -74,8 +73,7 @@ class GlobalExceptionHandlerTest {
 
     void accountNotActive_returns403AndErrorResponse() throws Exception {
  
-        when(accountService.getBalance(1))
-
+        when(accountService.getBalance(1, "user"))
                 .thenThrow(new AccountNotActiveException("Account is not active: 1"));
  
         mockMvc.perform(get("/api/v1/accounts/1/balance")
@@ -96,8 +94,7 @@ class GlobalExceptionHandlerTest {
 
     void insufficientBalance_returns400AndErrorResponse() throws Exception {
  
-        when(accountService.getAccount(1))
-
+        when(accountService.getAccount(1, "user"))
                 .thenThrow(new InsufficientBalanceException("Insufficient balance"));
  
         mockMvc.perform(get("/api/v1/accounts/1")

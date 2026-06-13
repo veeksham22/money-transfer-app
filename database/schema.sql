@@ -51,3 +51,19 @@ CREATE TABLE transaction_logs (
 -- Add comments to tables
 ALTER TABLE accounts COMMENT = 'Bank accounts for money transfer system';
 ALTER TABLE transaction_logs COMMENT = 'Complete audit trail of all money transfers';
+
+-- Reward grants ledger (awarded to sender on eligible successful transfers)
+CREATE TABLE IF NOT EXISTS reward_grant (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    transaction_id INT NOT NULL,
+    from_account_id INT NOT NULL,
+    to_account_id INT NOT NULL,
+    transaction_amount DECIMAL(19, 2) NOT NULL,
+    points INT NOT NULL,
+    granted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uk_reward_transaction UNIQUE (transaction_id),
+    INDEX idx_reward_username (username),
+    INDEX idx_reward_granted_at (granted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

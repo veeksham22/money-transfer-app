@@ -34,7 +34,7 @@ public class AccountController {
             @PathVariable("id") @Min(value = 1, message = "id must be >= 1") Integer id,
             Authentication authentication) {
 
-        AccountResponse response = accountService.getAccount(id);
+        AccountResponse response = accountService.getAccount(id, authentication.getName());
         return ResponseEntity.ok(response);
     }
 
@@ -48,7 +48,7 @@ public class AccountController {
             @PathVariable("id") @Min(value = 1, message = "id must be >= 1") Integer id,
             Authentication authentication) {
 
-        BalanceResponse response = accountService.getBalance(id);
+        BalanceResponse response = accountService.getBalance(id, authentication.getName());
         return ResponseEntity.ok(response);
     }
 
@@ -62,7 +62,7 @@ public class AccountController {
             @PathVariable("id") @Min(value = 1, message = "id must be >= 1") Integer id,
             Authentication authentication) {
 
-        List<TransferResponse> response = accountService.getTransactions(id);
+        List<TransferResponse> response = accountService.getTransactions(id, authentication.getName());
         return ResponseEntity.ok(response);
     }
 }

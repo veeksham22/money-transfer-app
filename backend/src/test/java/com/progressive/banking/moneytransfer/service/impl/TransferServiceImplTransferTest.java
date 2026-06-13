@@ -30,6 +30,7 @@ import com.progressive.banking.moneytransfer.exception.AccountNotFoundException;
 import com.progressive.banking.moneytransfer.exception.DuplicateTransferException;
 import com.progressive.banking.moneytransfer.repository.AccountRepository;
 import com.progressive.banking.moneytransfer.repository.TransactionLogRepository;
+import com.progressive.banking.moneytransfer.service.RewardService;
 
 @ExtendWith(MockitoExtension.class)
 class TransferServiceImplTransferTest {
@@ -39,6 +40,9 @@ class TransferServiceImplTransferTest {
 
     @Mock
     private TransactionLogRepository transactionLogRepository;
+
+    @Mock
+    private RewardService rewardService;
 
     @InjectMocks
     private TransferServiceImpl transferService;

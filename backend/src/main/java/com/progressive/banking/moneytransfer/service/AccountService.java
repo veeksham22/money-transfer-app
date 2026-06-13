@@ -8,11 +8,11 @@ import com.progressive.banking.moneytransfer.domain.dto.TransferResponse;
 
 public interface AccountService {
 
-    AccountResponse getAccount(Integer id);
+    AccountResponse getAccount(Integer id, String username);
 
-    BalanceResponse getBalance(Integer id);
+    BalanceResponse getBalance(Integer id, String username);
 
-    List<TransferResponse> getTransactions(Integer id);
+    List<TransferResponse> getTransactions(Integer id, String username);
     
     Integer getAccountIdByHolderName(String holderName);
 }

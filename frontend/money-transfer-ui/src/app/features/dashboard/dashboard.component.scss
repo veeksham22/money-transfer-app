@@ -173,6 +173,15 @@
   transform: translateY(-1px) scale(0.98);
 }
 
+.btn-rewards {
+  border-color: #fcd34d;
+  color: #92400e;
+}
+
+.btn-rewards:hover {
+  background: #fffbeb;
+}
+
 /* ---------- LINK ---------- */
 .btn-link {
   background: none;

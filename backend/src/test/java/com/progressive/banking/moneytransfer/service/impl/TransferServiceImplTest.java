@@ -24,7 +24,7 @@ class TransferServiceImplTest {
 
     // We don't need repositories for these tests; methods under test don't use them.
     private final TransferServiceImpl transferService =
-            new TransferServiceImpl(null, null);
+            new TransferServiceImpl(null, null, null);
 
     private Account activeAccount(Integer id, BigDecimal balance) {
         Account acc = new Account();

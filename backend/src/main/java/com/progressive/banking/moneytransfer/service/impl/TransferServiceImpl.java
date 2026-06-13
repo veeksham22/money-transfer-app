@@ -18,6 +18,7 @@ import com.progressive.banking.moneytransfer.exception.InsufficientBalanceExcept
 import com.progressive.banking.moneytransfer.exception.UnauthorizedAccountAccessException;
 import com.progressive.banking.moneytransfer.repository.AccountRepository;
 import com.progressive.banking.moneytransfer.repository.TransactionLogRepository;
+import com.progressive.banking.moneytransfer.service.RewardService;
 import com.progressive.banking.moneytransfer.service.TransferService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class TransferServiceImpl implements TransferService {
 
     private final AccountRepository accountRepository;
     private final TransactionLogRepository transactionLogRepository;
+    private final RewardService rewardService;
 
     /**
      * Main API method
@@ -91,6 +93,9 @@ public class TransferServiceImpl implements TransferService {
             logEntity.setStatus(TransactionStatusEnum.SUCCESS);
             logEntity.setFailureReason(null);
             transactionLogRepository.save(logEntity);
+
+            // 8) Grant reward points for eligible transfers (same transaction boundary)
+            rewardService.processTransferReward(logEntity, from, to);
 
             return TransferMapper.toResponse(logEntity);
 

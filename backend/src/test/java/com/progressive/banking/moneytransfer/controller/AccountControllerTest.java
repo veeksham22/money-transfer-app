@@ -2,6 +2,7 @@ package com.progressive.banking.moneytransfer.controller;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,9 +53,10 @@ class AccountControllerTest {
         response.setVersion(1L);
         response.setLastUpdated(LocalDateTime.now());
 
-        given(accountService.getAccount(eq(id))).willReturn(response);
+        given(accountService.getAccount(eq(id), eq("testuser"))).willReturn(response);
 
         mockMvc.perform(get("/api/v1/accounts/{id}", id)
+                        .with(user("testuser"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(id))
@@ -70,9 +72,10 @@ class AccountControllerTest {
         response.setAccountId(id);
         response.setBalance(BigDecimal.valueOf(250));
 
-        given(accountService.getBalance(eq(id))).willReturn(response);
+        given(accountService.getBalance(eq(id), eq("testuser"))).willReturn(response);
 
         mockMvc.perform(get("/api/v1/accounts/{id}/balance", id)
+                        .with(user("testuser"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(id))
@@ -89,9 +92,10 @@ class AccountControllerTest {
         tx.setAmount(BigDecimal.valueOf(100));
         tx.setStatus(TransactionStatusEnum.SUCCESS);
 
-        given(accountService.getTransactions(eq(id))).willReturn(Collections.singletonList(tx));
+        given(accountService.getTransactions(eq(id), eq("testuser"))).willReturn(Collections.singletonList(tx));
 
         mockMvc.perform(get("/api/v1/accounts/{id}/transactions", id)
+                        .with(user("testuser"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].fromAccountId").value(id))

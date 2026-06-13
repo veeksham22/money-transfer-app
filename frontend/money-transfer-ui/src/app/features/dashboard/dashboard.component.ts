@@ -59,5 +59,9 @@ export class DashboardComponent implements OnInit {
   goToHistory(): void {
     this.router.navigate(['/history']);
   }
+
+  goToRewards(): void {
+    this.router.navigate(['/rewards']);
+  }
 }
 
