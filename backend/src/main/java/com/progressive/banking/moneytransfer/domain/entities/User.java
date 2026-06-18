@@ -19,4 +19,10 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+    
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private boolean emailVerified = false;
 }

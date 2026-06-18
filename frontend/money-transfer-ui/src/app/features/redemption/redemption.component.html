@@ -1,0 +1,240 @@
+<div class="redemption-container">
+  <!-- Header -->
+  <div class="redemption-header">
+    <button class="back-button" (click)="goBack()" aria-label="Go back">
+      ← Back
+    </button>
+    <h1>Redeem Rewards</h1>
+    <div class="points-badge">
+      <span class="points-value">{{ currentPoints() }}</span>
+      <span class="points-label">Points</span>
+    </div>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <div class="message-container">
+    <div class="success-message" *ngIf="successMessage()" [@slideIn]>
+      {{ successMessage() }}
+    </div>
+    <div class="error-message" *ngIf="error()" [@slideIn]>
+      {{ error() }}
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading redemption options...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!loading()" class="redemption-content">
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab() === 'available'"
+        (click)="activeTab.set('available')"
+      >
+        <span class="tab-icon">🎁</span>
+        Available Coupons ({{ availableCoupons().length }})
+      </button>
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab() === 'redeemed'"
+        (click)="activeTab.set('redeemed')"
+      >
+        <span class="tab-icon">✅</span>
+        My Coupons ({{ redeemedCoupons().length }})
+      </button>
+    </div>
+
+    <!-- Available Coupons Tab -->
+    <div *ngIf="activeTab() === 'available'" class="tab-content">
+      <div *ngIf="availableCoupons().length === 0" class="empty-state">
+        <p class="empty-icon">😢</p>
+        <p class="empty-text">No coupons available with your current points.</p>
+        <p class="empty-hint">Keep transferring money to earn more reward points!</p>
+      </div>
+
+      <div *ngIf="availableCoupons().length > 0" class="coupons-grid">
+        <div 
+          *ngFor="let coupon of availableCoupons()" 
+          [ngClass]="getCouponCardClass(coupon.discountPercentage)"
+          class="coupon-card-wrapper"
+        >
+          <!-- Coupon Card Front -->
+          <div class="coupon-card-front" (click)="toggleCouponDetails(coupon.id)">
+            <div class="coupon-header">
+              <div class="partner-info">
+                <span class="partner-icon">{{ getPartnerIcon(coupon.partner) }}</span>
+                <h3 class="partner-name">{{ coupon.partner }}</h3>
+              </div>
+              <div class="discount-badge">
+                <span class="discount-percent">{{ coupon.discountPercentage }}%</span>
+                <span class="discount-label">OFF</span>
+              </div>
+            </div>
+
+            <p class="coupon-description">{{ coupon.description }}</p>
+
+            <div class="coupon-meta">
+              <div class="meta-item">
+                <span class="meta-label">Points Required</span>
+                <span class="meta-value">{{ coupon.pointsRequired }} 💎</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Valid For</span>
+                <span class="meta-value">{{ coupon.validity }}</span>
+              </div>
+            </div>
+
+            <button 
+              class="redeem-button"
+              (click)="confirmRedemption(coupon); $event.stopPropagation()"
+              [disabled]="currentPoints() < coupon.pointsRequired"
+            >
+              <span class="button-icon">🎯</span> Redeem Now
+            </button>
+          </div>
+
+          <!-- Coupon Details (Expanded) -->
+          <div 
+            class="coupon-details"
+            *ngIf="expandedCouponId() === coupon.id"
+            [@slideDown]
+          >
+            <h4>Terms & Conditions</h4>
+            <ul class="terms-list">
+              <li *ngFor="let term of coupon.terms">{{ term }}</li>
+            </ul>
+            <button 
+              class="close-details"
+              (click)="toggleCouponDetails(coupon.id)"
+            >
+              Hide Details ✕
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Redeemed Coupons Tab -->
+    <div *ngIf="activeTab() === 'redeemed'" class="tab-content">
+      <div *ngIf="redeemedCoupons().length === 0" class="empty-state">
+        <p class="empty-icon">🎫</p>
+        <p class="empty-text">You haven't redeemed any coupons yet.</p>
+        <p class="empty-hint">Go to "Available Coupons" to start redeeming your points!</p>
+      </div>
+
+      <div *ngIf="redeemedCoupons().length > 0" class="redeemed-coupons-list">
+        <div 
+          *ngFor="let coupon of redeemedCoupons()"
+          class="redeemed-coupon"
+          [class.expired]="isCouponExpired(coupon)"
+          [class.used]="coupon.isUsed"
+        >
+          <div class="coupon-status">
+            <span *ngIf="coupon.isUsed" class="status-badge used">✓ Used</span>
+            <span *ngIf="!coupon.isUsed && isCouponExpired(coupon)" class="status-badge expired">✕ Expired</span>
+            <span *ngIf="!coupon.isUsed && !isCouponExpired(coupon)" class="status-badge active">● Active</span>
+          </div>
+
+          <div class="coupon-info">
+            <div class="coupon-row">
+              <span class="coupon-partner">
+                {{ getPartnerIcon(coupon.partner) }} {{ coupon.partner }}
+              </span>
+              <span class="coupon-discount">{{ coupon.discountPercentage }}% OFF</span>
+            </div>
+
+            <div class="coupon-code-section">
+              <label class="coupon-code-label">Coupon Code:</label>
+              <div class="coupon-code-display">
+                <span class="coupon-code">{{ coupon.couponCode }}</span>
+                <button 
+                  class="copy-button"
+                  (click)="copyCouponCode(coupon.couponCode)"
+                  title="Copy to clipboard"
+                >
+                  📋 Copy
+                </button>
+              </div>
+            </div>
+
+            <div class="coupon-details-grid">
+              <div class="detail-item">
+                <span class="detail-label">Points Redeemed</span>
+                <span class="detail-value">{{ coupon.pointsRedeemed }} 💎</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Redeemed On</span>
+                <span class="detail-value">{{ formatDate(coupon.redeemedAt) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Expires In</span>
+                <span class="detail-value" [class.expiring-soon]="getDaysRemaining(coupon) <= 5">
+                  {{ getDaysRemaining(coupon) }} days
+                </span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Expiry Date</span>
+                <span class="detail-value">{{ formatDate(coupon.expiresAt) }}</span>
+              </div>
+            </div>
+
+            <div class="coupon-actions" *ngIf="!coupon.isUsed && !isCouponExpired(coupon)">
+              <button 
+                class="action-button mark-used"
+                (click)="markAsUsed(coupon)"
+              >
+                Mark as Used ✓
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Redemption Confirmation Modal -->
+  <div *ngIf="showRedemptionConfirm()" class="modal-overlay" (click)="cancelRedemption()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>Confirm Redemption</h2>
+      
+      <div class="confirmation-details">
+        <div class="detail-row">
+          <span class="label">Partner</span>
+          <span class="value">
+            {{ getPartnerIcon(showRedemptionConfirm()!.partner) }} {{ showRedemptionConfirm()!.partner }}
+          </span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Discount</span>
+          <span class="value">{{ showRedemptionConfirm()!.discountPercentage }}% OFF</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Points Cost</span>
+          <span class="value cost-highlight">{{ showRedemptionConfirm()!.pointsRequired }} 💎</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Remaining Points</span>
+          <span class="value">{{ currentPoints() - showRedemptionConfirm()!.pointsRequired }} 💎</span>
+        </div>
+      </div>
+
+      <p class="confirmation-message">
+        You're about to redeem <strong>{{ showRedemptionConfirm()!.pointsRequired }} reward points</strong> 
+        for a <strong>{{ showRedemptionConfirm()!.discountPercentage }}% discount coupon</strong> at 
+        <strong>{{ showRedemptionConfirm()!.partner }}</strong>. This action cannot be undone.
+      </p>
+
+      <div class="modal-actions">
+        <button class="button cancel" (click)="cancelRedemption()">Cancel</button>
+        <button class="button confirm" (click)="redeemCoupon(showRedemptionConfirm()!)">
+          Confirm & Get Coupon
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

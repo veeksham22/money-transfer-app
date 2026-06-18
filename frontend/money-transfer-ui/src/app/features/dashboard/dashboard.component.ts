@@ -1,8 +1,10 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { map } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { AccountService } from '../../core/services/account.service';
+import { RewardsService } from '../../core/services/rewards.service';
 import { Account } from '../../core/models/account.model';
 
 @Component({
@@ -15,11 +17,16 @@ import { Account } from '../../core/models/account.model';
 export class DashboardComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly accountService = inject(AccountService);
+  private readonly rewardsService = inject(RewardsService);
   private readonly router = inject(Router);
 
   account = signal<Account | null>(null);
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
+
+  userPoints$ = this.rewardsService.getSummary().pipe(
+    map(summary => summary.totalPoints)
+  );
 
   ngOnInit(): void {
     const accountId = this.auth.getAccountId();
@@ -58,6 +65,14 @@ export class DashboardComponent implements OnInit {
 
   goToHistory(): void {
     this.router.navigate(['/history']);
+  }
+
+  goToRewards(): void {
+    this.router.navigate(['/rewards']);
+  }
+
+  goToRedemption(): void {
+    this.router.navigate(['/redeem']);
   }
 }
 

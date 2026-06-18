@@ -59,7 +59,7 @@ class AccountServiceImplTest {
         Account account = account(id, "Alice", BigDecimal.valueOf(500));
         when(accountRepository.findById(eq(id))).thenReturn(Optional.of(account));
 
-        AccountResponse response = accountService.getAccount(id);
+        AccountResponse response = accountService.getAccount(id, "Alice");
 
         assertEquals(id, response.getAccountId());
         assertEquals("Alice", response.getHolderName());
@@ -73,7 +73,7 @@ class AccountServiceImplTest {
         Integer id = 999;
         when(accountRepository.findById(eq(id))).thenReturn(Optional.empty());
 
-        assertThrows(AccountNotFoundException.class, () -> accountService.getAccount(id));
+        assertThrows(AccountNotFoundException.class, () -> accountService.getAccount(id, "Alice"));
         verify(accountRepository).findById(id);
     }
 
@@ -84,7 +84,7 @@ class AccountServiceImplTest {
         Account account = account(id, "Bob", BigDecimal.valueOf(250));
         when(accountRepository.findById(eq(id))).thenReturn(Optional.of(account));
 
-        BalanceResponse response = accountService.getBalance(id);
+        BalanceResponse response = accountService.getBalance(id, "Bob");
 
         assertEquals(id, response.getAccountId());
         assertEquals(BigDecimal.valueOf(250), response.getBalance());
@@ -97,7 +97,7 @@ class AccountServiceImplTest {
         Integer id = 999;
         when(accountRepository.findById(eq(id))).thenReturn(Optional.empty());
 
-        assertThrows(AccountNotFoundException.class, () -> accountService.getBalance(id));
+        assertThrows(AccountNotFoundException.class, () -> accountService.getBalance(id, "Bob"));
     }
 
     @Test
@@ -118,7 +118,7 @@ class AccountServiceImplTest {
         when(transactionLogRepository.findByFromAccountIdOrToAccountIdOrderByCreatedOnDesc(eq(id), eq(id)))
                 .thenReturn(List.of(log));
 
-        List<TransferResponse> result = accountService.getTransactions(id);
+        List<TransferResponse> result = accountService.getTransactions(id, "Carol");
 
         assertEquals(1, result.size());
         assertEquals(id, result.get(0).getFromAccountId());
@@ -134,6 +134,6 @@ class AccountServiceImplTest {
         Integer id = 999;
         when(accountRepository.findById(eq(id))).thenReturn(Optional.empty());
 
-        assertThrows(AccountNotFoundException.class, () -> accountService.getTransactions(id));
+        assertThrows(AccountNotFoundException.class, () -> accountService.getTransactions(id, "Carol"));
     }
 }

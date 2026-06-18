@@ -13,6 +13,7 @@ import com.progressive.banking.moneytransfer.domain.entities.TransactionLog;
 import com.progressive.banking.moneytransfer.domain.mapper.AccountMapper;
 import com.progressive.banking.moneytransfer.domain.mapper.TransferMapper;
 import com.progressive.banking.moneytransfer.exception.AccountNotFoundException;
+import com.progressive.banking.moneytransfer.exception.UnauthorizedAccountAccessException;
 import com.progressive.banking.moneytransfer.repository.AccountRepository;
 import com.progressive.banking.moneytransfer.repository.TransactionLogRepository;
 import com.progressive.banking.moneytransfer.service.AccountService;
@@ -28,17 +29,15 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional(readOnly = true)
-    public AccountResponse getAccount(Integer id) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException("Account not found: " + id));
+    public AccountResponse getAccount(Integer id, String username) {
+        Account account = findOwnedAccount(id, username);
         return AccountMapper.toAccountResponse(account);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public BalanceResponse getBalance(Integer id) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException("Account not found: " + id));
+    public BalanceResponse getBalance(Integer id, String username) {
+        Account account = findOwnedAccount(id, username);
         return AccountMapper.toBalanceResponse(account);
     }
     
@@ -51,15 +50,23 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TransferResponse> getTransactions(Integer id) {
-
-        // validates account existence
-        accountRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException("Account not found: " + id));
+    public List<TransferResponse> getTransactions(Integer id, String username) {
+        findOwnedAccount(id, username);
 
         List<TransactionLog> logs = transactionLogRepository
                 .findByFromAccountIdOrToAccountIdOrderByCreatedOnDesc(id, id);
 
         return logs.stream().map(TransferMapper::toResponse).toList();
+    }
+
+    private Account findOwnedAccount(Integer id, String username) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found: " + id));
+
+        if (!account.getHolderName().equalsIgnoreCase(username)) {
+            throw new UnauthorizedAccountAccessException(
+                    "Account does not belong to logged-in user");
+        }
+        return account;
     }
 }

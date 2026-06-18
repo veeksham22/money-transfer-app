@@ -1,0 +1,263 @@
+.rewards-layout {
+  width: 100%;
+  max-width: 960px;
+}
+
+.rewards-card {
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 1.5rem;
+  padding: 2rem 2.25rem;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.rewards-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.rewards-header p {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.rewards-header {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 2px;
+}
+
+.back-btn {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #2563eb;
+  border-radius: 6px;
+}
+
+.back-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.summary-section {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.points-card {
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  background: radial-gradient(circle at top right, #fef3c7, #fffbeb);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.points-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.point-item {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.points-card .label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #92400e;
+}
+
+.points-value {
+  margin-top: 0.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #78350f;
+}
+
+.points-value.available {
+  color: #059669;
+}
+
+.points-value.redeemed {
+  color: #dc2626;
+}
+
+.points-card .muted {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  color: #a16207;
+}
+
+.redeem-button {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.rules-card {
+  border-radius: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.rules-card h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.rules-card ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.88rem;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.rules-card .example {
+  margin: 0.75rem 0 0;
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.history-section {
+  margin-top: 2rem;
+}
+
+.history-section h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+}
+
+.table-wrapper {
+  border-radius: 1rem;
+  border: 1px solid #e5e7eb;
+  overflow: auto;
+}
+
+.rewards-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+
+.rewards-table thead {
+  background-color: #f9fafb;
+}
+
+.rewards-table th,
+.rewards-table td {
+  padding: 0.65rem 0.9rem;
+  white-space: nowrap;
+}
+
+.rewards-table th {
+  text-align: left;
+  font-weight: 600;
+  color: #4b5563;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.rewards-table td {
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.rewards-table tr:last-child td {
+  border-bottom: none;
+}
+
+.numeric {
+  text-align: right;
+}
+
+.numeric.points {
+  color: #15803d;
+  font-weight: 700;
+}
+
+.alert {
+  margin-top: 1rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.alert-error {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+.loading {
+  margin-top: 1.5rem;
+}
+
+.skeleton-row {
+  height: 32px;
+  margin-bottom: 0.5rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e5e7eb, #f3f4f6, #e5e7eb);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.empty-state {
+  padding: 1.5rem;
+  text-align: center;
+  color: #6b7280;
+}
+
+.empty-state .hint {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  .rewards-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .summary-section {
+    grid-template-columns: 1fr;
+  }
+}

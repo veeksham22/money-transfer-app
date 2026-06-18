@@ -1,0 +1,92 @@
+<div class="rewards-layout">
+  <section class="rewards-card">
+    <header class="rewards-header">
+      <button class="back-btn" type="button" (click)="goBack()">← Back</button>
+      <div class="header-text">
+        <h1>Rewards</h1>
+        <p>Earn 1 point for every ₹100 transferred to another user.</p>
+      </div>
+    </header>
+
+    <div class="alert alert-error" *ngIf="error()">
+      {{ error() }}
+    </div>
+
+    <div class="summary-section" *ngIf="!loading() && summary(); else loadingTpl">
+      <div class="points-card">
+        <div class="points-row">
+          <div class="point-item">
+            <span class="label">Total reward points</span>
+            <div class="points-value">{{ summary()?.totalPoints }}</div>
+            <p class="muted">{{ summary()?.totalGrants }} eligible transfer(s)</p>
+          </div>
+          <div class="point-item" *ngIf="summary()?.redeemedPoints! > 0">
+            <span class="label">Redeemed points</span>
+            <div class="points-value redeemed">-{{ summary()?.redeemedPoints }}</div>
+            <p class="muted">Used for coupons</p>
+          </div>
+          <div class="point-item">
+            <span class="label">Available points</span>
+            <div class="points-value available">{{ summary()?.availablePoints }}</div>
+            <p class="muted">Ready to redeem</p>
+          </div>
+        </div>
+        <button class="redeem-button" (click)="navigateToRedemption()" *ngIf="summary()?.availablePoints! > 0">
+          🎁 Redeem Rewards
+        </button>
+      </div>
+
+      <div class="rules-card">
+        <h2>How rewards work</h2>
+        <ul>
+          <li>Transfer must be <strong>successful</strong></li>
+          <li>Amount must be <strong>greater than ₹{{ summary()?.minEligibleAmount }}</strong></li>
+          <li>Sender and receiver must be <strong>different users</strong></li>
+          <li>Self-transfers are <strong>not eligible</strong></li>
+          <li>Earn <strong>1 point per ₹100</strong> (rounded down)</li>
+        </ul>
+        <p class="example">Example: ₹250 → 2 points · ₹199 → 1 point · ₹99 → 0 points</p>
+      </div>
+    </div>
+
+    <div class="history-section" *ngIf="!loading()">
+      <h2>Reward history</h2>
+
+      <div class="table-wrapper" *ngIf="history().length; else emptyTpl">
+        <table class="rewards-table">
+          <thead>
+            <tr>
+              <th>Date &amp; time</th>
+              <th>Transaction</th>
+              <th>From → To</th>
+              <th class="numeric">Amount</th>
+              <th class="numeric">Points</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of history()">
+              <td>{{ item.grantedAt | date : 'medium' }}</td>
+              <td>#{{ item.transactionId }}</td>
+              <td>#{{ item.fromAccountId }} → #{{ item.toAccountId }}</td>
+              <td class="numeric">₹ {{ item.transactionAmount | number : '1.2-2' }}</td>
+              <td class="numeric points">+{{ item.points }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #emptyTpl>
+        <div class="empty-state">
+          <p>No rewards yet.</p>
+          <p class="hint">Make a transfer above ₹100 to another user to start earning points.</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <ng-template #loadingTpl>
+      <div class="loading">
+        <div class="skeleton-row" *ngFor="let _ of [1, 2, 3]"></div>
+      </div>
+    </ng-template>
+  </section>
+</div>

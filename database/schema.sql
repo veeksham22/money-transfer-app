@@ -3,8 +3,10 @@
 -- Money Transfer System Database Schema
 -- MySQL 8.x
 
--- Drop existing tables (if any)
+-- Drop existing tables (if any) - in correct order for foreign keys
+DROP TABLE IF EXISTS coupon_redemption;
 DROP TABLE IF EXISTS transaction_logs;
+DROP TABLE IF EXISTS reward_grant;
 DROP TABLE IF EXISTS accounts;
 
 -- Create Accounts Table
@@ -51,3 +53,41 @@ CREATE TABLE transaction_logs (
 -- Add comments to tables
 ALTER TABLE accounts COMMENT = 'Bank accounts for money transfer system';
 ALTER TABLE transaction_logs COMMENT = 'Complete audit trail of all money transfers';
+
+-- Reward grants ledger (awarded to sender on eligible successful transfers)
+CREATE TABLE IF NOT EXISTS reward_grant (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    transaction_id INT NOT NULL,
+    from_account_id INT NOT NULL,
+    to_account_id INT NOT NULL,
+    transaction_amount DECIMAL(19, 2) NOT NULL,
+    points INT NOT NULL,
+    granted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uk_reward_transaction UNIQUE (transaction_id),
+    INDEX idx_reward_username (username),
+    INDEX idx_reward_granted_at (granted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Coupon redemption ledger (tracks coupons redeemed using reward points)
+CREATE TABLE IF NOT EXISTS coupon_redemption (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    coupon_code VARCHAR(10) NOT NULL UNIQUE,
+    merchant VARCHAR(50) NOT NULL,
+    discount_percentage INT NOT NULL,
+    points_spent INT NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+    redeemed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    expiry_date TIMESTAMP NOT NULL,
+    used_at TIMESTAMP,
+
+    CONSTRAINT chk_discount CHECK (discount_percentage BETWEEN 5 AND 100),
+    CONSTRAINT chk_coupon_status CHECK (status IN ('ACTIVE', 'EXPIRED', 'USED', 'CANCELLED')),
+    INDEX idx_coupon_username (username),
+    INDEX idx_coupon_code (coupon_code),
+    INDEX idx_coupon_redeemed_at (redeemed_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE coupon_redemption COMMENT = 'Coupon codes redeemed using reward points';

@@ -173,6 +173,25 @@
   transform: translateY(-1px) scale(0.98);
 }
 
+.btn-rewards {
+  border-color: #fcd34d;
+  color: #92400e;
+}
+
+.btn-rewards:hover {
+  background: #fffbeb;
+}
+
+.btn-redeem {
+  border-color: #ec4899;
+  color: #be185d;
+  background: rgba(236, 72, 153, 0.05);
+}
+
+.btn-redeem:hover {
+  background: rgba(236, 72, 153, 0.12);
+}
+
 /* ---------- LINK ---------- */
 .btn-link {
   background: none;
