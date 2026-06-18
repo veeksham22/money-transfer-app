@@ -14,9 +14,26 @@
 
     <div class="summary-section" *ngIf="!loading() && summary(); else loadingTpl">
       <div class="points-card">
-        <span class="label">Total reward points</span>
-        <div class="points-value">{{ summary()?.totalPoints }}</div>
-        <p class="muted">{{ summary()?.totalGrants }} eligible transfer(s) rewarded</p>
+        <div class="points-row">
+          <div class="point-item">
+            <span class="label">Total reward points</span>
+            <div class="points-value">{{ summary()?.totalPoints }}</div>
+            <p class="muted">{{ summary()?.totalGrants }} eligible transfer(s)</p>
+          </div>
+          <div class="point-item" *ngIf="summary()?.redeemedPoints! > 0">
+            <span class="label">Redeemed points</span>
+            <div class="points-value redeemed">-{{ summary()?.redeemedPoints }}</div>
+            <p class="muted">Used for coupons</p>
+          </div>
+          <div class="point-item">
+            <span class="label">Available points</span>
+            <div class="points-value available">{{ summary()?.availablePoints }}</div>
+            <p class="muted">Ready to redeem</p>
+          </div>
+        </div>
+        <button class="redeem-button" (click)="navigateToRedemption()" *ngIf="summary()?.availablePoints! > 0">
+          🎁 Redeem Rewards
+        </button>
       </div>
 
       <div class="rules-card">

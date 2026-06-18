@@ -4,6 +4,9 @@ export interface RewardSummary {
   totalGrants: number;
   minEligibleAmount: number;
   pointsPerHundredRupees: number;
+
+  redeemedPoints: number;
+  availablePoints: number;
 }
 
 export interface RewardHistoryItem {

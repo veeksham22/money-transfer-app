@@ -55,6 +55,10 @@ export class RewardsComponent implements OnInit {
     });
   }
 
+  navigateToRedemption(): void {
+    this.router.navigate(['/redeem']);
+  }
+
   goBack(): void {
     this.location.back();
   }

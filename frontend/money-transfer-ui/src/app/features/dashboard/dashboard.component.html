@@ -37,6 +37,9 @@
       <button type="button" class="btn-outline btn-rewards" (click)="goToRewards()">
         Rewards
       </button>
+      <button type="button" class="btn-outline btn-redeem" (click)="goToRedemption()" *ngIf="(userPoints$ | async) as points">
+        🎁 Redeem ({{ points }})
+      </button>
       <button type="button" class="btn-link" (click)="logout()">
         Logout
       </button>

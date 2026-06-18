@@ -4,6 +4,7 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { TransferComponent } from './features/transfer/transfer.component';
 import { HistoryComponent } from './features/history/history.component';
 import { RewardsComponent } from './features/rewards/rewards.component';
+import { RedemptionComponent } from './features/redemption/redemption.component';
 import { authGuard } from './core/guards/auth.guard';
 import { SignupComponent } from './features/signup/signup.component';
 
@@ -39,6 +40,11 @@ export const routes: Routes = [
   {
     path: 'rewards',
     component: RewardsComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'redeem',
+    component: RedemptionComponent,
     canActivate: [authGuard],
   },
 

@@ -16,6 +16,7 @@ import com.progressive.banking.moneytransfer.domain.entities.Account;
 import com.progressive.banking.moneytransfer.domain.entities.RewardGrant;
 import com.progressive.banking.moneytransfer.domain.entities.TransactionLog;
 import com.progressive.banking.moneytransfer.domain.mapper.RewardMapper;
+import com.progressive.banking.moneytransfer.repository.CouponRedemptionRepository;
 import com.progressive.banking.moneytransfer.repository.RewardGrantRepository;
 import com.progressive.banking.moneytransfer.service.RewardService;
 
@@ -28,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RewardServiceImpl implements RewardService {
 
     private final RewardGrantRepository rewardGrantRepository;
+    private final CouponRedemptionRepository couponRedemptionRepository;
 
     @Override
     @Transactional
@@ -72,10 +74,21 @@ public class RewardServiceImpl implements RewardService {
     public RewardSummaryResponse getSummary(String username) {
         long totalPoints = rewardGrantRepository.sumPointsByUsername(username);
         long totalGrants = rewardGrantRepository.countByUsername(username);
+        
+        // Calculate redeemed points (total points spent on coupons)
+        long redeemedPoints = couponRedemptionRepository.findByUsernameOrderByRedeemedAtDesc(username)
+                .stream()
+                .filter(c -> c.getStatus().equalsIgnoreCase("ACTIVE") || c.getStatus().equalsIgnoreCase("USED"))
+                .mapToLong(c -> c.getPointsSpent())
+                .sum();
+        
+        long availablePoints = totalPoints - redeemedPoints;
 
         return RewardSummaryResponse.builder()
                 .username(username)
                 .totalPoints(totalPoints)
+                .availablePoints(availablePoints)
+                .redeemedPoints(redeemedPoints)
                 .totalGrants(totalGrants)
                 .minEligibleAmount(RewardConstants.MIN_ELIGIBLE_AMOUNT.intValue())
                 .pointsPerHundredRupees(1)

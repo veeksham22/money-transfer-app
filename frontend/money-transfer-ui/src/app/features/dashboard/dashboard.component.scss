@@ -182,6 +182,16 @@
   background: #fffbeb;
 }
 
+.btn-redeem {
+  border-color: #ec4899;
+  color: #be185d;
+  background: rgba(236, 72, 153, 0.05);
+}
+
+.btn-redeem:hover {
+  background: rgba(236, 72, 153, 0.12);
+}
+
 /* ---------- LINK ---------- */
 .btn-link {
   background: none;
