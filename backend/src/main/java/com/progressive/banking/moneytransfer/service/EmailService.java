@@ -16,7 +16,7 @@ public class EmailService {
     public void sendOtp(String toEmail, String otp) {
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("veeksham69@gmail.com");   // ✅ ADD THIS
+        message.setFrom("veeksham69@gmail.com");   
         message.setTo(toEmail);
         message.setSubject("Money Transfer System - Email Verification");
         message.setText(
